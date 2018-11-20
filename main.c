@@ -3,6 +3,7 @@
 #include <string.h>
 #include <complex.h>
 #include <math.h>
+#include <complex.h>
 char str[105],arr[105];
 int isValid,mathError;
 
@@ -26,42 +27,42 @@ void inc(int *idx){
 	} while(str[*idx] == ' ');
 }
 
-double parse_expression(int *idx);
+complex parse_expression(int *idx);
 
-double parse_item(int *idx){
+complex parse_item(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
 	char t = str[*idx];
-	double result = 0;
+	complex result = 0;
 	if (tipe(t) == 0){
-		char strdouble[105];
-		int idxdouble = 0;
+		char strcomplex[105];
+		int idxcomplex = 0;
 		int countdot = 0;
-		strdouble[idxdouble] = t;
-	//	printf("value strdouble %c\n",strdouble[idxdouble]);
+		strcomplex[idxcomplex] = t;
+	//	printf("value strcomplex %c\n",strcomplex[idxcomplex]);
 		while ((tipe(t) == 0) || (t == '.')) {
 			/*result = result * 10;
 			result = result + (t-'0');*/
 			inc(idx);
 			t = str[*idx];
 			if ((tipe(t) == 0) || (t == '.')) {
-				inc(&idxdouble);
-				strdouble[idxdouble] = t;
+				inc(&idxcomplex);
+				strcomplex[idxcomplex] = t;
 				if (t == '.')
 					countdot = countdot + 1;
 				if (countdot > 1)
 					isValid = 0;
 			}
 		}
-		if (strdouble[idxdouble] == '.')
+		if (strcomplex[idxcomplex] == '.')
 			isValid = 0;
 		else {
-			result = strtod(strdouble,NULL);
+			result = strtod(strcomplex,NULL);
 			//printf("result = %f\n",result);
 		}
 
-		memset(strdouble, 0, sizeof(strdouble));
+		memset(strcomplex, 0, sizeof(strcomplex));
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
@@ -96,12 +97,12 @@ double parse_item(int *idx){
 	return result;
 }
 
-double parse_factor(int *idx){
+complex parse_factor(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
 	char t = str[*idx];
-	double result;
+	complex result;
 	int prev = *idx;
 	result = parse_item(idx);
 	if(prev == *idx){
@@ -112,7 +113,7 @@ double parse_factor(int *idx){
 	if(t == '^'){
 		inc(idx);
 		int prev = *idx;
-		result = pow(result,parse_factor(idx));
+		result = cpow(result,parse_factor(idx));
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -121,16 +122,16 @@ double parse_factor(int *idx){
 	return result;
 }
 
-double parse_term(int *idx){
+complex parse_term(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
-	double result = parse_factor(idx);
+	complex result = parse_factor(idx);
 	char t = str[*idx];
 	while(tipe(t) == 2){
 		inc(idx);
 		int prev = *idx;
-		double rhs = parse_factor(idx);
+		complex rhs = parse_factor(idx);
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -148,13 +149,13 @@ double parse_term(int *idx){
 	return result;
 }
 
-double parse_expression(int *idx){
-	double result = parse_term(idx);
+complex parse_expression(int *idx){
+	complex result = parse_term(idx);
 	char t = str[*idx];
 	while(tipe(t) == 1){
 		inc(idx);
 		int prev = *idx;
-		double rhs = parse_term(idx);
+		complex rhs = parse_term(idx);
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -175,11 +176,11 @@ int main(){
 		int x = strlen(str);
 		int idx = 0;
 		isValid = 1;
-		double res = parse_expression(&idx);
+		complex res = parse_expression(&idx);
 
 		if(isValid && idx == strlen(str)){
 			if(mathError)printf("Math error\n");
-			else printf("Hasil : %.20lf\n", res);
+			else printf("Hasil : %.8lf + %.8lfi\n", creal(res),cimag(res));
 		} else printf("Ekspresi tidak valid\n");
 	//}
 
