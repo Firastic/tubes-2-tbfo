@@ -4,6 +4,7 @@
 #include <complex.h>
 #include <math.h>
 #include <complex.h>
+const double EPS = 0.0000000001;
 char str[105],arr[105];
 int isValid,mathError;
 
@@ -19,6 +20,12 @@ int tipe(char X){
 		default: if(X <= '9' && X >= '0')return 0;
 				 else return 6;
 	}
+}
+
+complex modified_cpow(complex a, complex b){
+	if(fabs(creal(a)) <= EPS && fabs(creal(b)) <= EPS && fabs(cimag(a)) <= EPS && fabs(cimag(b)) <= EPS){
+		return 1;
+	} else return cpow(a,b);
 }
 
 void inc(int *idx){
@@ -75,7 +82,7 @@ complex parse_item(int *idx){
 			inc(idx);
 			prev = *idx;
 			result = -parse_expression(idx);
-			if(cimag(result) < 0.0000000000001){
+			if(cimag(result) < EPS){
 				result = creal(result);
 			}
 			if(prev == *idx){
@@ -120,7 +127,7 @@ complex parse_factor(int *idx){
 	if(t == '^'){
 		inc(idx);
 		int prev = *idx;
-		result = cpow(result,parse_factor(idx));
+		result = modified_cpow(result,parse_factor(idx));
 		if(prev == *idx){
 			isValid = 0;
 			return result;
