@@ -50,10 +50,7 @@ complex parse_number(int *idx){
 	int countdot = 0;
 	int isFirstNumber = 1;
 	strcomplex[idxcomplex] = t;
-//	printf("value strcomplex %c\n",strcomplex[idxcomplex]);
 	while ((tipe(t) == 0) || (t == '.')) {
-		/*result = result * 10;
-		result = result + (t-'0');*/
 		(*idx)++;
 		t = str[*idx];
 		if(isFirstNumber && tipe(t) == 0 && strcomplex[0] == '0'){
@@ -75,7 +72,6 @@ complex parse_number(int *idx){
 	}
 	else {
 		return strtod(strcomplex,NULL);
-		//printf("result = %f\n",result);
 	}
 }
 
