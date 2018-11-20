@@ -65,7 +65,22 @@ double parse_item(int *idx){
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
-		result = parse_expression(idx);
+		t = str[*idx];
+		if(t == '-'){
+			inc(idx);
+			prev = *idx;
+			result = -parse_expression(idx);
+			if(prev == *idx){
+				isValid = 0;
+				return result;
+			}
+		} else{
+			result = parse_expression(idx);
+			if(prev == *idx){
+				isValid = 0;
+				return result;
+			}
+		}
 
 		if(prev == *idx){
 			isValid = 0;
@@ -87,22 +102,12 @@ double parse_factor(int *idx){
 	}
 	char t = str[*idx];
 	double result;
-	if(t == '-'){
-		inc(idx);
-		int prev = *idx;
-		result = -parse_item(idx);
-		if(prev == *idx){
-			isValid = 0;
-			return result;
-		}
-	} else if(tipe(t) == 0 || tipe(t) == 4){
-		int prev = *idx;
-		result = parse_item(idx);
-		if(prev == *idx){
-			isValid = 0;
-			return result;
-		}
-	} else isValid = 0;
+	int prev = *idx;
+	result = parse_item(idx);
+	if(prev == *idx){
+		isValid = 0;
+		return result;
+	}
 	t = str[*idx];
 	if(t == '^'){
 		inc(idx);
