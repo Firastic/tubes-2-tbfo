@@ -2,7 +2,7 @@
 #include <string.h>
 #include <math.h>
 char str[105],arr[105];
-int isValid;
+int isValid,mathError;
 
 int tipe(char X){
 	switch(X){
@@ -13,7 +13,8 @@ int tipe(char X){
 		case '^': return 3; break;
 		case '(': return 4; break;
 		case ')': return 5; break;
-		default: return 0;
+		default: if(X <= '9' && X >= '0')return 0;
+				 else return 6;
 	}
 }
 
@@ -26,6 +27,9 @@ void inc(int *idx){
 float parse_expression(int *idx);
 
 float parse_item(int *idx){
+	if(*idx == strlen(str)){
+		isValid = 0;
+	}
 	char t = str[*idx];
 	float result = 0;
 	if(tipe(t) == 0){
@@ -44,11 +48,14 @@ float parse_item(int *idx){
 			isValid = 0;
 			return result;
 		}
-	}
+	} else isValid = 0;
 	return result;
 }
 
 float parse_factor(int *idx){
+	if(*idx == strlen(str)){
+		isValid = 0;
+	}
 	char t = str[*idx];
 	float result;
 	if(t == '-'){
@@ -66,7 +73,7 @@ float parse_factor(int *idx){
 			isValid = 0;
 			return result;
 		}
-	} else return result;
+	} else isValid = 0;
 	t = str[*idx];
 	if(t == '^'){
 		inc(idx);
@@ -81,6 +88,9 @@ float parse_factor(int *idx){
 }
 
 float parse_term(int *idx){
+	if(*idx == strlen(str)){
+		isValid = 0;
+	}
 	float result = parse_factor(idx);
 	char t = str[*idx];
 	while(tipe(t) == 2){
@@ -94,7 +104,11 @@ float parse_term(int *idx){
 
 		if(t == '*')result = result*rhs;
 		else if(rhs != 0)result = result/rhs;
-		else *idx = strlen(str)+1;
+		else if(t == '/'){
+			mathError = 1;
+		} else {
+			isValid = 0;
+		}
 		t = str[*idx];
 	}
 	return result;
@@ -113,7 +127,8 @@ float parse_expression(int *idx){
 		}
 
 		if(t == '+')result = result+rhs;
-		else result = result-rhs;
+		else if(t == '-')result = result-rhs;
+		else isValid = 0;
 		t = str[*idx];
 	}
 	return result;
@@ -121,15 +136,13 @@ float parse_expression(int *idx){
 	
 int main(){
 	gets(str);
-	str[strlen(str)] = ' ';
-	str[strlen(str)] = '.';
 	int x = strlen(str);
 	int idx = 0;
 	isValid = 1;
 	float res = parse_expression(&idx);
 
 	if(isValid){
-		if(idx > x)printf("Math error\n");
+		if(mathError)printf("Math error\n");
 		else printf("%f\n", res);
 	} else printf("Ekspresi tidak valid\n");
 }
