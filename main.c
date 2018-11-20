@@ -35,6 +35,15 @@ float parse_item(int *idx){
 	if(tipe(t) == 0){
 		result = t-'0';
 		inc(idx);
+		int f = 0;
+		int i = *idx;
+		while (tipe(str[i]) == 0){
+			f++;
+			i++;
+		}
+		if (f > 0){
+			result = (result * pow(10, f)) + parse_item(idx);
+		}
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
