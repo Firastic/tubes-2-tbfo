@@ -33,20 +33,6 @@ float parse_item(int *idx){
 	}
 	char t = str[*idx];
 	float result = 0;
-<<<<<<< Updated upstream
-	if(tipe(t) == 0){
-		result = t-'0';
-		inc(idx);
-		int f = 0;
-		int i = *idx;
-		while (tipe(str[i]) == 0){
-			f++;
-			i++;
-		}
-		if (f > 0){
-			result = (result * pow(10, f)) + parse_item(idx);
-		}
-=======
 	if (tipe(t) == 0){
 		char strfloat[105];
 		int idxfloat = 0;
@@ -66,7 +52,6 @@ float parse_item(int *idx){
 		result = strtof(strfloat,NULL);
 		printf("result = %f\n",result);
 		memset(strfloat, 0, sizeof(strfloat));
->>>>>>> Stashed changes
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
@@ -155,7 +140,7 @@ float parse_expression(int *idx){
 	while(tipe(t) == 1){
 		inc(idx);
 		int prev = *idx;
-		int rhs = parse_term(idx);
+		float rhs = parse_term(idx);
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -176,7 +161,7 @@ int main(){
 	isValid = 1;
 	float res = parse_expression(&idx);
 
-	if(isValid){
+	if(isValid && idx == strlen(str)){
 		if(mathError)printf("Math error\n");
 		else printf("%f\n", res);
 	} else printf("Ekspresi tidak valid\n");
