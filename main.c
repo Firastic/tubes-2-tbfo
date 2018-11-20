@@ -40,6 +40,43 @@ void outputComplex(complex X){
 
 complex parse_expression(int *idx);
 
+complex parse_number(int *idx){
+	char t = str[*idx];
+	char strcomplex[105];
+	memset(strcomplex,0,sizeof(strcomplex));
+	int idxcomplex = 0;
+	int countdot = 0;
+	int isFirstNumber = 1;
+	strcomplex[idxcomplex] = t;
+//	printf("value strcomplex %c\n",strcomplex[idxcomplex]);
+	while ((tipe(t) == 0) || (t == '.')) {
+		/*result = result * 10;
+		result = result + (t-'0');*/
+		(*idx)++;
+		t = str[*idx];
+		if(isFirstNumber && tipe(t) == 0 && strcomplex[0] == '0'){
+			isValid = 0;
+		}
+		isFirstNumber = 0;
+		if ((tipe(t) == 0) || (t == '.')) {
+			inc(&idxcomplex);
+			strcomplex[idxcomplex] = t;
+			if (t == '.')
+				countdot = countdot + 1;
+			if (countdot > 1)
+				isValid = 0;
+		}
+	}
+	if (strcomplex[idxcomplex] == '.'){
+		isValid = 0;
+		return 0;
+	}
+	else {
+		return strtod(strcomplex,NULL);
+		//printf("result = %f\n",result);
+	}
+}
+
 complex parse_item(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
@@ -47,33 +84,7 @@ complex parse_item(int *idx){
 	char t = str[*idx];
 	complex result = 0;
 	if (tipe(t) == 0){
-		char strcomplex[105];
-		int idxcomplex = 0;
-		int countdot = 0;
-		strcomplex[idxcomplex] = t;
-	//	printf("value strcomplex %c\n",strcomplex[idxcomplex]);
-		while ((tipe(t) == 0) || (t == '.')) {
-			/*result = result * 10;
-			result = result + (t-'0');*/
-			inc(idx);
-			t = str[*idx];
-			if ((tipe(t) == 0) || (t == '.')) {
-				inc(&idxcomplex);
-				strcomplex[idxcomplex] = t;
-				if (t == '.')
-					countdot = countdot + 1;
-				if (countdot > 1)
-					isValid = 0;
-			}
-		}
-		if (strcomplex[idxcomplex] == '.')
-			isValid = 0;
-		else {
-			result = strtod(strcomplex,NULL);
-			//printf("result = %f\n",result);
-		}
-
-		memset(strcomplex, 0, sizeof(strcomplex));
+		result = parse_number(idx);
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
