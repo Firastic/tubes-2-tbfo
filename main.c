@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <complex.h>
 #include <math.h>
 char str[105],arr[105];
 int isValid,mathError;
@@ -32,11 +33,7 @@ double parse_item(int *idx){
 		isValid = 0;
 	}
 	char t = str[*idx];
-<<<<<<< HEAD
 	double result = 0;
-=======
-	float result = 0;
->>>>>>> c754c050a69b3fb88277f95530cd866cec75352b
 	if (tipe(t) == 0){
 		char strdouble[105];
 		int idxdouble = 0;
@@ -57,13 +54,14 @@ double parse_item(int *idx){
 					isValid = 0;
 			}
 		}
-		result = strtod(strdouble,NULL);
-		printf("result = %f\n",result);
-<<<<<<< HEAD
+		if (strdouble[idxdouble] == '.')
+			isValid = 0;
+		else {
+			result = strtod(strdouble,NULL);
+			//printf("result = %f\n",result);
+		}
+
 		memset(strdouble, 0, sizeof(strdouble));
-=======
-		memset(strfloat, 0, sizeof(strfloat));
->>>>>>> c754c050a69b3fb88277f95530cd866cec75352b
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
@@ -98,7 +96,6 @@ double parse_factor(int *idx){
 			return result;
 		}
 	} else if(tipe(t) == 0 || tipe(t) == 4){
-		printf("Angka parse\n");
 		int prev = *idx;
 		result = parse_item(idx);
 		if(prev == *idx){
@@ -128,7 +125,7 @@ double parse_term(int *idx){
 	while(tipe(t) == 2){
 		inc(idx);
 		int prev = *idx;
-		int rhs = parse_factor(idx);
+		double rhs = parse_factor(idx);
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -152,11 +149,7 @@ double parse_expression(int *idx){
 	while(tipe(t) == 1){
 		inc(idx);
 		int prev = *idx;
-<<<<<<< HEAD
 		double rhs = parse_term(idx);
-=======
-		float rhs = parse_term(idx);
->>>>>>> c754c050a69b3fb88277f95530cd866cec75352b
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -171,14 +164,18 @@ double parse_expression(int *idx){
 }
 
 int main(){
-	gets(str);
-	int x = strlen(str);
-	int idx = 0;
-	isValid = 1;
-	double res = parse_expression(&idx);
+	//int i;
+	//for (i = 1 ; i < 20 ; ++i) {
+		gets(str);
+		int x = strlen(str);
+		int idx = 0;
+		isValid = 1;
+		double res = parse_expression(&idx);
 
-	if(isValid && idx == strlen(str)){
-		if(mathError)printf("Math error\n");
-		else printf("%f\n", res);
-	} else printf("Ekspresi tidak valid\n");
+		if(isValid && idx == strlen(str)){
+			if(mathError)printf("Math error\n");
+			else printf("Hasil : %.20lf\n", res);
+		} else printf("Ekspresi tidak valid\n");
+	//}
+
 }
