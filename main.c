@@ -25,48 +25,37 @@ void inc(int *idx){
 	} while(str[*idx] == ' ');
 }
 
-float parse_expression(int *idx);
+double parse_expression(int *idx);
 
-float parse_item(int *idx){
+double parse_item(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
 	char t = str[*idx];
-	float result = 0;
-<<<<<<< Updated upstream
-	if(tipe(t) == 0){
-		result = t-'0';
-		inc(idx);
-		int f = 0;
-		int i = *idx;
-		while (tipe(str[i]) == 0){
-			f++;
-			i++;
-		}
-		if (f > 0){
-			result = (result * pow(10, f)) + parse_item(idx);
-		}
-=======
+	double result = 0;
 	if (tipe(t) == 0){
-		char strfloat[105];
-		int idxfloat = 0;
-		strfloat[idxfloat] = t;
-	//	printf("value strfloat %c\n",strfloat[idxfloat]);
+		char strdouble[105];
+		int idxdouble = 0;
+		int countdot = 0;
+		strdouble[idxdouble] = t;
+	//	printf("value strdouble %c\n",strdouble[idxdouble]);
 		while ((tipe(t) == 0) || (t == '.')) {
 			/*result = result * 10;
 			result = result + (t-'0');*/
 			inc(idx);
 			t = str[*idx];
 			if ((tipe(t) == 0) || (t == '.')) {
-				inc(&idxfloat);
-				strfloat[idxfloat] = t;
-				//printf("value strfloat %c\n",strfloat[idxfloat]);
+				inc(&idxdouble);
+				strdouble[idxdouble] = t;
+				if (t == '.')
+					countdot = countdot + 1;
+				if (countdot > 1)
+					isValid = 0;
 			}
 		}
-		result = strtof(strfloat,NULL);
+		result = strtod(strdouble,NULL);
 		printf("result = %f\n",result);
-		memset(strfloat, 0, sizeof(strfloat));
->>>>>>> Stashed changes
+		memset(strdouble, 0, sizeof(strdouble));
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
@@ -86,12 +75,12 @@ float parse_item(int *idx){
 	return result;
 }
 
-float parse_factor(int *idx){
+double parse_factor(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
 	char t = str[*idx];
-	float result;
+	double result;
 	if(t == '-'){
 		inc(idx);
 		int prev = *idx;
@@ -122,11 +111,11 @@ float parse_factor(int *idx){
 	return result;
 }
 
-float parse_term(int *idx){
+double parse_term(int *idx){
 	if(*idx == strlen(str)){
 		isValid = 0;
 	}
-	float result = parse_factor(idx);
+	double result = parse_factor(idx);
 	char t = str[*idx];
 	while(tipe(t) == 2){
 		inc(idx);
@@ -149,13 +138,13 @@ float parse_term(int *idx){
 	return result;
 }
 
-float parse_expression(int *idx){
-	float result = parse_term(idx);
+double parse_expression(int *idx){
+	double result = parse_term(idx);
 	char t = str[*idx];
 	while(tipe(t) == 1){
 		inc(idx);
 		int prev = *idx;
-		int rhs = parse_term(idx);
+		double rhs = parse_term(idx);
 		if(prev == *idx){
 			isValid = 0;
 			return result;
@@ -174,7 +163,7 @@ int main(){
 	int x = strlen(str);
 	int idx = 0;
 	isValid = 1;
-	float res = parse_expression(&idx);
+	double res = parse_expression(&idx);
 
 	if(isValid){
 		if(mathError)printf("Math error\n");
