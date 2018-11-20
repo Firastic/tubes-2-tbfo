@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <math.h>
 char str[105],arr[105];
@@ -8,7 +9,7 @@ int tipe(char X){
 	switch(X){
 		case '+': return 1; break;
 		case '-': return 1; break;
-		case '*': return 2; break; 
+		case '*': return 2; break;
 		case '/': return 2; break;
 		case '^': return 3; break;
 		case '(': return 4; break;
@@ -32,6 +33,7 @@ float parse_item(int *idx){
 	}
 	char t = str[*idx];
 	float result = 0;
+<<<<<<< Updated upstream
 	if(tipe(t) == 0){
 		result = t-'0';
 		inc(idx);
@@ -44,15 +46,38 @@ float parse_item(int *idx){
 		if (f > 0){
 			result = (result * pow(10, f)) + parse_item(idx);
 		}
+=======
+	if (tipe(t) == 0){
+		char strfloat[105];
+		int idxfloat = 0;
+		strfloat[idxfloat] = t;
+	//	printf("value strfloat %c\n",strfloat[idxfloat]);
+		while ((tipe(t) == 0) || (t == '.')) {
+			/*result = result * 10;
+			result = result + (t-'0');*/
+			inc(idx);
+			t = str[*idx];
+			if ((tipe(t) == 0) || (t == '.')) {
+				inc(&idxfloat);
+				strfloat[idxfloat] = t;
+				//printf("value strfloat %c\n",strfloat[idxfloat]);
+			}
+		}
+		result = strtof(strfloat,NULL);
+		printf("result = %f\n",result);
+		memset(strfloat, 0, sizeof(strfloat));
+>>>>>>> Stashed changes
 	} else if(t == '('){
 		inc(idx);
 		int prev = *idx;
 		result = parse_expression(idx);
+
 		if(prev == *idx){
 			isValid = 0;
 			return result;
 		}
-		if(str[*idx] == ')')inc(idx);
+		if(str[*idx] == ')')
+			inc(idx);
 		else {
 			isValid = 0;
 			return result;
@@ -76,6 +101,7 @@ float parse_factor(int *idx){
 			return result;
 		}
 	} else if(tipe(t) == 0 || tipe(t) == 4){
+		printf("Angka parse\n");
 		int prev = *idx;
 		result = parse_item(idx);
 		if(prev == *idx){
@@ -142,7 +168,7 @@ float parse_expression(int *idx){
 	}
 	return result;
 }
-	
+
 int main(){
 	gets(str);
 	int x = strlen(str);
