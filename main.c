@@ -27,6 +27,10 @@ void inc(int *idx){
 	} while(str[*idx] == ' ');
 }
 
+void outputComplex(complex X){
+	printf("%.8f + %.8fi\n", creal(X), cimag(X));
+}
+
 complex parse_expression(int *idx);
 
 complex parse_item(int *idx){
@@ -71,6 +75,9 @@ complex parse_item(int *idx){
 			inc(idx);
 			prev = *idx;
 			result = -parse_expression(idx);
+			if(cimag(result) < 0.0000000000001){
+				result = creal(result);
+			}
 			if(prev == *idx){
 				isValid = 0;
 				return result;
@@ -180,7 +187,7 @@ int main(){
 
 		if(isValid && idx == strlen(str)){
 			if(mathError)printf("Math error\n");
-			else printf("Hasil : %.8lf + %.8lfi\n", creal(res),cimag(res));
+			else outputComplex(res);
 		} else printf("Ekspresi tidak valid\n");
 	//}
 
